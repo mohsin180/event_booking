@@ -5,6 +5,7 @@ import com.mohsin.booking.domain.entity.Event;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.util.Optional;
 import java.util.UUID;
 
 public interface EventService {
@@ -15,4 +16,12 @@ public interface EventService {
     Event getEvent(UUID eventId, UUID organizerId);
 
     Event updateEvent(UUID eventId, UUID organizerId, CreateEventRequest request);
+
+    void deleteEvent(UUID organizerId, UUID eventId);
+
+    Page<Event> getPublishedEvents(Pageable pageable);
+
+    Page<Event> searchEvents(String query, Pageable pageable);
+
+    Optional<Event> getPublishedEventById(UUID eventId);
 }

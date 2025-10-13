@@ -2,6 +2,7 @@ package com.mohsin.booking.services.Impl;
 
 import com.mohsin.booking.domain.CreateEventRequest;
 import com.mohsin.booking.domain.entity.Event;
+import com.mohsin.booking.domain.entity.EventStatusEnum;
 import com.mohsin.booking.domain.entity.TicketType;
 import com.mohsin.booking.domain.entity.User;
 import com.mohsin.booking.exceptions.EventNotFoundException;
@@ -15,6 +16,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -87,5 +89,26 @@ public class EventServiceImpl implements EventService {
                 ).toList();
         event.setTicketTypes(tickets);
         return eventRepository.save(event);
+    }
+
+    @Override
+    public void deleteEvent(UUID organizerId, UUID eventId) {
+        eventRepository.findByIdAndOrganizerId(eventId, organizerId).
+                ifPresent(eventRepository::delete);
+    }
+
+    @Override
+    public Page<Event> getPublishedEvents(Pageable pageable) {
+        return eventRepository.findByStatus(EventStatusEnum.PUBLISHED, pageable);
+    }
+
+    @Override
+    public Page<Event> searchEvents(String query, Pageable pageable) {
+        return eventRepository.searchEvents(query, pageable);
+    }
+
+    @Override
+    public Optional<Event> getPublishedEventById(UUID eventId) {
+        return eventRepository.findByIdAndStatus(eventId, EventStatusEnum.PUBLISHED);
     }
 }

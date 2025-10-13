@@ -1,6 +1,7 @@
 # 🎟️ Event Ticket Booking Platform
 
-A **Spring Boot–based event management and ticket booking system** that allows event organizers to create, manage, and track events, while users can explore, purchase, and validate tickets seamlessly.
+A **Spring Boot–based event management and ticket booking system** that allows event organizers to create, manage, and
+track events, while users can explore, purchase, and validate tickets seamlessly.
 
 ---
 
@@ -18,15 +19,15 @@ A **Spring Boot–based event management and ticket booking system** that allows
 
 ## 🧩 Tech Stack
 
-| Layer | Technology |
-|-------|-------------|
-| **Backend** | Spring Boot (Java 17) |
-| **Database** | PostgreSQL, H2 (runtime) |
-| **Security** | KeyCloak |
-| **ORM** | Spring Data JPA |
-| **Mapping** | MapStruct (v1.6.3) |
-| **Code Simplification** | Lombok (v1.18.36) |
-| **Build Tool** | Maven |
+| Layer                   | Technology               |
+|-------------------------|--------------------------|
+| **Backend**             | Spring Boot (Java 17)    |
+| **Database**            | PostgreSQL, H2 (runtime) |
+| **Security**            | KeyCloak                 |
+| **ORM**                 | Spring Data JPA          |
+| **Mapping**             | MapStruct (v1.6.3)       |
+| **Code Simplification** | Lombok (v1.18.36)        |
+| **Build Tool**          | Maven                    |
 
 ---
 
