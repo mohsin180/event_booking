@@ -9,9 +9,11 @@ import com.mohsin.booking.domain.entity.QRCode;
 import com.mohsin.booking.domain.entity.QRCodeStatusEnum;
 import com.mohsin.booking.domain.entity.Ticket;
 import com.mohsin.booking.exceptions.QRCodeGenerationException;
+import com.mohsin.booking.exceptions.QRCodeNotFoundException;
 import com.mohsin.booking.repo.QRCodeRepository;
 import com.mohsin.booking.services.QRCodeService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.imageio.ImageIO;
@@ -23,6 +25,7 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class QRCodeServiceImpl implements QRCodeService {
     private static final int MAX_WIDTH = 300;
     private static final int MAX_HEIGHT = 300;
@@ -44,6 +47,18 @@ public class QRCodeServiceImpl implements QRCodeService {
             throw new QRCodeGenerationException("Failed to generate QRCode" + exception);
         }
 
+    }
+
+    @Override
+    public byte[] getQRCodeImageForUserAndTicket(UUID userId, UUID ticketId) {
+        QRCode qrCode = qrCodeRepository.findByTicketIdAndTicketPurchaserId(ticketId, userId)
+                .orElseThrow(() -> new QRCodeNotFoundException("Ticket id " + ticketId + " not found"));
+        try {
+            return Base64.getDecoder().decode(qrCode.getValue());
+        } catch (IllegalArgumentException exception) {
+            log.error(exception.getMessage());
+            throw new QRCodeNotFoundException("Ticket id " + ticketId + " not found");
+        }
     }
 
     private String generateQRCodeImage(UUID uniqueId) throws WriterException, IOException {

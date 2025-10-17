@@ -1,9 +1,9 @@
 package com.mohsin.booking.config;
 
+import com.mohsin.booking.filters.JwtAuthenticationConverter;
 import com.mohsin.booking.filters.UserProvisioningFilter;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -15,17 +15,20 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableWebSecurity
 public class SecurityConfig {
 
-    public SecurityFilterChain securityFilterChain(HttpSecurity http, UserProvisioningFilter userProvisioningFilter)
+    public SecurityFilterChain securityFilterChain(HttpSecurity http, UserProvisioningFilter userProvisioningFilter
+            , JwtAuthenticationConverter AuthenticationConverter)
             throws Exception {
         return http.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(request ->
                         request.requestMatchers(HttpMethod.GET, "/api/v1/publishedEvents/**")
                                 .authenticated()
+                                .requestMatchers("/api/v1/events").hasRole("ORGANIZER")
+                                .requestMatchers("/api/v1/ticket-validations").hasRole("STAFF")
                                 .anyRequest().authenticated())
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .oauth2ResourceServer(resource ->
-                        resource.jwt(Customizer.withDefaults()))
+                        resource.jwt(jwt -> jwt.jwtAuthenticationConverter(AuthenticationConverter)))
                 .addFilterAfter(userProvisioningFilter, BearerTokenAuthenticationFilter.class)
                 .build();
     }
